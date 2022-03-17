@@ -8,7 +8,7 @@ def main():
         US_counties = json.load(f)
     # print(US_counties["features"][0]['geometry']['coordinates'][0][0])
     # print(US_counties["features"][0]['geometry'])
-    # exec(open('pythonProject2/0Main.py').read())
+    exec(open('pythonProject2/0Main.py').read())
 
 
     df_dict = {
