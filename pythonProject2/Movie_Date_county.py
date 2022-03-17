@@ -1,0 +1,195 @@
+import pandas as pd
+
+#This line reads the csv file, keeping 5 digits
+reader=pd.read_csv("movie_integrated.csv")#, converters={"FIPSCounty": '{:0>5}'.format})
+#print(reader)
+#print(reader.columns)
+#print(reader.index)
+
+#This line reads the startdate column
+
+county=reader["FIPSCounty"]#.astype(str)
+#print(county)
+county=sorted(list(set(county)))
+
+reader_fips=pd.read_csv("US_FIPS_Codes.csv")#
+allcounty=reader_fips['FIPS']
+allcounty=sorted(list(set(allcounty)))
+allcounty=pd.to_numeric(allcounty)
+
+#reader=reader.append(reader[reader["FIPSCounty"]=="6".zfill(5)].replace("6".zfill(5),"06001"))
+#reader.to_csv("integrated movie.csv")
+#print(date)
+#print(type(date))
+#date0=set(date0)
+#for i in date:
+ #   i=pd.to_datetime(i)
+#date0=sorted(date0)
+#date0=list(date0)
+Startweek=sorted(list(set(reader["Startweek"])))
+#datelist = pd.date_range(date[0], date[-1],freq="7D").tolist()
+#date_list=[d.strftime('%Y-%m-%d') for d in datelist]
+#print(date_list)
+
+#def intersection(lst1, lst2):
+#    lst3 = [value for value in lst1 if value in lst2]
+#    return lst3
+#print(intersection(date_list, date))
+
+#Convert policy to index
+policyname=reader["PolicyName"].astype(str)
+movie_dict={"Closed":4, "Capacity 25":3, "Capacity 50":2, "Capacity 50plus":1,
+ "Capacity 100":-10, "Vaccine Required For Entry - Start":0}
+
+policyindex=[]
+for i in policyname:
+        policyindex.append(movie_dict[i])
+
+#This line appends the week start date column
+reader["Policyindex"]=policyindex
+#reader["Key point"] = reader["Startweek"].astype(str) +','+reader["FIPSCounty"].astype(str)
+#reader["Weekly change"] = reader["FIPSCounty"].astype(str) +','+reader["Policyindex"].astype(str)
+
+#print(dict_key)
+dict_key = list(zip(reader.Startweek,reader.FIPSCounty))
+
+
+
+reader = reader.iloc[: , 1:]
+reader = reader.drop(columns=['CountyName', 'CategoryName','PolicyName','StartDate'])
+#reader.to_csv("movie_policyasindex.csv")
+reader_county=pd.to_numeric(reader.FIPSCounty)
+
+#This line converts the format
+#reader_out = reader.set_index(['FIPSCounty',reader.groupby(['FIPSCounty']).cumcount()+1]).unstack().sort_index(level=1, axis=1)
+#reader_out.columns = reader_out.columns.map('{0[0]}_{0[1]}'.format)
+#reader_out.reset_index()
+
+
+#reader_out=reader_out.assign(TF)
+#print (reader_out)
+#for i in county:
+    #i=int(i)
+
+#df=pd.DataFrame(index=date,columns=datelist)
+#for i in da
+#df.loc[df['c1'] == 'Value', 'c2'] = 10
+#for i in county:
+ #   startdate = reader['StartDate'][(reader["FIPSCounty" == i]) & (reader["PolicyName" == "Stay at Home Start"])]
+  #  print(startdate)
+
+#for i in county:
+ #   for j in date:
+  #      startdate=pd.to_datetime(reader['StartDate'][(reader["FIPSCounty"==i])&(reader["PolicyName"=="Stay at Home Start"])])
+   #     enddate=pd.to_datetime(reader['StartDate'][(reader["FIPSCounty"==i])&(reader["PolicyName"=="Stay at Home End"])])
+    #    if j>=startdate and j<= enddate:
+     #       df[i][j]=1
+      #  else:
+       #     df[i][j]=0
+
+
+#print(df)
+
+#df.to_csv("Stayhome_Date_county.csv")
+#reader_out.to_csv("test.csv")
+#for i in reader:
+ #   if i["PolicyName"].str.contains("End"):
+
+# Generate a 'difference' dataframe
+
+
+#This line reads the county column
+
+l=sorted(list(set(reader.Startweek)))
+#ls=[]
+#for i in l:
+#    ls.append(i.strftime("%Y-%m-%d"))
+
+Diffform=pd.DataFrame(index=allcounty, columns=sorted(list(set(reader.Startweek))))
+#print(allcounty)
+#Diffform=pd.DataFrame(index=county, columns=sorted(list(set(reader.Startweek))))
+for col in Diffform.columns:
+    Diffform[col].values[:] = 0
+#Diffform.at[dict_key[0][1],dict_key[0][0]]=1
+#print(Diffform.at[dict_key[0][1],dict_key[0][0]])
+#print(dict_key[0][1])
+#print(dict_key[0][0])
+#print(reader.loc[(reader['Startweek']==dict_key[0][0])&(reader['FIPSCounty']==dict_key[0][1])]['Policyindex'])
+#Diffform.at[dict_key[0][1],dict_key[0][0]]=reader.loc[(reader['Startweek']==dict_key[0][0])&(reader['FIPSCounty']==dict_key[0][1])]['Policyindex']
+for i in dict_key:
+    Diffform.loc[i[1],i[0]]=reader[(reader['Startweek']==i[0])&(reader['FIPSCounty']==i[1])].Policyindex.iloc[0]
+
+#print(Diffform.loc[6001,'2020-5-17'])
+#print(reader[(reader['Startweek']=='2020-5-17')&(reader['FIPSCounty']==6001)].Policyindex.iloc[0])
+
+# Deal with the state-wise orders
+#for i in allcounty:
+ #   m = int(i // 1000)
+  #  if m in county:
+   #     if reader["FIPSCounty"==i].StartDate < reader["FIPSCounty"==m].StartDate:
+    #        Diffform.loc[i] = Diffform.loc[m]
+
+#print(Diffform.loc[6001,'2020-5-17'])
+#print(reader[(reader['Startweek']=='2020-5-17')&(reader['FIPSCounty']==6001)].Policyindex.iloc[0])
+
+#Diffform = Diffform.drop(index=11)
+#Diffform=Diffform.drop(index=lambda x: x in county and x < 100)
+
+#Diffform[Diffform>0]=1
+#Diffform[Diffform<0]=-1
+#Diffform = Diffform[~(Diffform == 0).any(axis=1)]
+#Diffform=Diffform.replace(12,6)
+
+for i in range(100):
+    if i in allcounty:
+        Diffform = Diffform.drop(index=i)
+
+#Diffform.to_csv("movie_diffform.csv")
+
+#Finally, generate the sum form
+Sumform=Diffform
+
+for j in range(len(Sumform.index)):
+    for i in range(1,len(Sumform.columns)):
+        if Sumform.loc[Sumform.index[j],Sumform.columns[i]]!=Diffform.loc[Diffform.index[j],Diffform.columns[i-1]] and Sumform.loc[Sumform.index[j],Sumform.columns[i]]==0:
+            Sumform.loc[Sumform.index[j], Sumform.columns[i]] = Diffform.loc[
+                Diffform.index[j], Diffform.columns[i - 1]]
+        Sumform.loc[Sumform.index[j], Sumform.columns[i]] = max(0, Sumform.loc[Sumform.index[j], Sumform.columns[i]])
+
+new_col = Sumform.index
+Sumform.insert(loc=0, column='GeoID', value=new_col)
+
+
+        #if Sumform.loc[Sumform.index[j],Sumform.columns[i]]>0:
+        #    Sumform.loc[Sumform.index[j], Sumform.columns[i]]=1
+       # else:
+         #   Sumform.loc[Sumform.index[j], Sumform.columns[i]] = 0
+  #  Sumform[Sumform.columns[i]]=pd.to_numeric(Sumform[Sumform.columns[i]])
+#Sumform[Sumform>0]=1
+#Sumform[Sumform<0]=0
+#Sumform= Sumform[~(Sumform == 0).any(axis=1)]
+
+l.insert(0,"GeoID")
+Sumform.columns=l
+
+Sumform.to_csv("movie_sumform.csv")
+
+#for col in list(set(Startweek)):
+ #   for row in county:
+  #      m=col.astype(str)+','+row.astype(str)
+   #     print(m)
+    #    if m in dict:
+     #       Diffform.at[row, col]=reader['Policyindex',reader.loc['Key point'==m]]
+      #  else:
+       #     Diffform.at[row, col] =0
+#Diffform.to_csv("diffform.csv")
+
+
+# Then we generate the weekstart date list, as column name
+# We use the fipscounty as index
+
+# Actually, for each date, generate a vector (FIPSCounty, weekly change)
+# Use a dictionary???
+# Weekly change by default is 0, unless
+# Each date adds up the weekly change
+
