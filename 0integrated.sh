@@ -1,5 +1,4 @@
 #!/bin/bash
-#SBATCH--time=55:00
 #SBATCH--workdir=/gpfs/home/sr2364/
 
 module purge
