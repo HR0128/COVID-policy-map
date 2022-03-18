@@ -74,4 +74,26 @@ Sumform.insert(loc=0, column='GeoID', value=new_col)
 l.insert(0,"GeoID")
 Sumform.columns=l
 
+m=['99999']
+n=['99998']
+o=['99997']
+p=['99996']
+q=['99995']
+h=['99994']
+
+for i in range(1, len(Sumform.columns)):
+    m.append(0)
+    n.append(1)
+    o.append(2)
+    p.append(3)
+    q.append(4)
+    h.append(5)
+
+Sumform.loc[len(Sumform)] =m
+Sumform.loc[len(Sumform)] =n
+Sumform.loc[len(Sumform)] =o
+Sumform.loc[len(Sumform)] =p
+Sumform.loc[len(Sumform)] =q
+Sumform.loc[len(Sumform)] =h
+
 Sumform.to_csv("Gyms_sumform.csv")
