@@ -78,5 +78,15 @@ Sumform.insert(loc=0, column='GeoID', value=new_col)
 l.insert(0,"GeoID")
 Sumform.columns=l
 
+m=['99999']
+n=['99998']
+
+for i in range(1, len(Sumform.columns)):
+    m.append(0)
+    n.append(1)
+
+Sumform.loc[len(Sumform)] =m
+Sumform.loc[len(Sumform)] =n
+
 Sumform.to_csv("sthm_sumform.csv")
 
